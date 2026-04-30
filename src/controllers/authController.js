@@ -17,6 +17,7 @@ const register = async(req,res)=>{
       name,
       email,
       password:hashedPassword,
+      department,
       position,
       salary,
       role
@@ -24,6 +25,7 @@ const register = async(req,res)=>{
     
     res.status(201).json({message: 'Funcionário criado com sucesso', id:employee._id})
   } catch (error) {
+ 
     res.status(500).json({message: 'Erro ao criar funcionário'})
   }
 }

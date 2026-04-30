@@ -1,22 +1,22 @@
 const Employee = require('../models/Employee')
 
-const getAll = async(req,res)=>{
+const getAll = async (req, res) => {
   try {
-    const {department,position,search} = req.body
+    const { department, position, search } = req.query
 
-    const filters ={status:'ativo'}
-    if(department) filters.department = department
-    if(position) filter.position = position
+    const filters = { status: 'ativo' }
+    if (department) filters.department = department
+    if (position) filters.position = position
     if (search) {
       filters.$or = [
         { name: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } }
       ]
     }
-    const employess = await Employee.find(filters).select('password')
-    res.json(employess)
+    const employees = await Employee.find(filters).select('-password')
+    res.json(employees)
   } catch (error) {
-    res.status(500).json({message: 'Erro ao buscar funcionários'})
+    res.status(500).json({ message: 'Erro ao buscar funcionários' })
   }
 }
 const getById = async (req, res) => {
@@ -39,14 +39,14 @@ const getById = async (req, res) => {
   }
 }
 
-const update = async(req,res)=>{
+const update = async (req, res) => {
   try {
-    const{name,department,position,salary} = req.body
-    
+    const { name, department, position, salary } = req.body
+
     const employee = await Employee.findByIdAndUpdate(
       req.params.id,
-      {name,department,position,salary},
-      {new:true}
+      { name, department, position, salary },
+      { returnDocument: 'after' }
     ).select('-password')
 
     if (!employee) {
@@ -59,37 +59,37 @@ const update = async(req,res)=>{
   }
 }
 
-const dismiss = async(req,res)=>{
+const dismiss = async (req, res) => {
   try {
-    const employee =await Employee.findByIdAndUpdate(
+    const employee = await Employee.findByIdAndUpdate(
       req.params.id,
-      {status:'inativo'},
-      {new:true}
+      { status: 'inativo' },
+      { returnDocument: 'after' }
     ).select('-password')
-    
+
     if (!employee) {
-      return res.status(404).json({message: 'Funcionário não encontrado'})
+      return res.status(404).json({ message: 'Funcionário não encontrado' })
     }
-    
-    res.json({message:`Funcionário ${employee.name} desligado com sucesso`})
+
+    res.json({ message: `Funcionário ${employee.name} desligado com sucesso` })
   } catch (error) {
+    
     res.status(500).json({ message: 'Erro ao desligar funcionário' });
   }
 }
 
-const payroll = async (req,res)=>{
+const payroll = async (req, res) => {
   try {
-    const employees = await Employee.find({status:'ativo'}).select('name position department salary')
-  
-    const total = employess.reduce((sum,emp)=>sum+emp.salary,0)
+    const employees = await Employee.find({ status: 'ativo' }).select('name position department salary')
 
+    const total = employees.reduce((sum, emp) => sum + emp.salary, 0)
     res.json({
-      total_funcionários: employees.length,
+      total_funcionarios: employees.length,
       total_folha: total,
-      funcionrios: employees
+      funcionarios: employees
     })
   } catch (error) {
-    res.status(500).json({message:'Erro ao gerar relatório'})
+    res.status(500).json({ message: 'Erro ao gerar relatório' })
   }
 }
 

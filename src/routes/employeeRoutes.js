@@ -8,7 +8,7 @@ router.use(authMiddleware)
 
 router.get('/',adminMiddleware,getAll)
 router.put('/:id',adminMiddleware,update)
-router.patch('/:id/dismiss',adminMiddleware,update)
+router.patch('/:id/dismiss',adminMiddleware,dismiss)
 router.get('/payroll',adminMiddleware,payroll)
 
 router.get('/:id',getById)
