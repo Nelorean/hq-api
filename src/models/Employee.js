@@ -25,7 +25,7 @@ const employeeSchema = new mongoose.Schema({
   },
   position:{
     type: String,
-    required: treu
+    required: true
   },
   salary:{
     type: Number,

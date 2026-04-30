@@ -26,35 +26,35 @@ const register = async(req,res)=>{
   } catch (error) {
     res.status(500).json({message: 'Erro ao criar funcionário'})
   }
+}
 
-  const login = async (req,res)=>{
-    try {
-      const {email,password} = req.body
+const login = async (req,res)=>{
+  try {
+    const {email,password} = req.body
 
-      const employee = await Employee.findOne({email})
-      if (!employee) {
-        return res.status(401).json({message: 'Email ou senha inválidos'})
-      }
-
-      if (employee.status=== 'inativo') {
-        return res.status(402).json({message: 'Funcionário desligado'})
-      }
-      
-      const passwordMatch = await bcrypt.compare(password,employee.password)
-      if (!passwordMatch) {
-        return res.status(401).json({message: 'Email ou senha inválidos'})
-      }
-
-      const token = jwt.sign(
-        {id:employee._id, role:employee.role},
-        process.env.JWT_SECRET,
-        {expiresIn: '1d'}
-      )
-      
-      res.json({token});
-    } catch (error) {
-      res.status(500).json({message: 'Erro ao faezr login'})
+    const employee = await Employee.findOne({email})
+    if (!employee) {
+      return res.status(401).json({message: 'Email ou senha inválidos'})
     }
+
+    if (employee.status=== 'inativo') {
+      return res.status(402).json({message: 'Funcionário desligado'})
+    }
+    
+    const passwordMatch = await bcrypt.compare(password,employee.password)
+    if (!passwordMatch) {
+      return res.status(401).json({message: 'Email ou senha inválidos'})
+    }
+
+    const token = jwt.sign(
+      {id:employee._id, role:employee.role},
+      process.env.JWT_SECRET,
+      {expiresIn: '1d'}
+    )
+    
+    res.json({token});
+  } catch (error) {
+    res.status(500).json({message: 'Erro ao faezr login'})
   }
 }
-module.exports = {register,login}
+module.exports = {register, login}

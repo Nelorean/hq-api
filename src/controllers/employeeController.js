@@ -75,21 +75,21 @@ const dismiss = async(req,res)=>{
   } catch (error) {
     res.status(500).json({ message: 'Erro ao desligar funcionário' });
   }
+}
 
-  const payroll = async (req,res)=>{
-    try {
-      const employees = await Employee.find({status:'ativo'}).select('name position department salary')
-    
-      const total = employess.reduce((sum,emp)=>sum+emp.salary,0)
+const payroll = async (req,res)=>{
+  try {
+    const employees = await Employee.find({status:'ativo'}).select('name position department salary')
+  
+    const total = employess.reduce((sum,emp)=>sum+emp.salary,0)
 
-      res.json({
-        total_funcionários: employees.length,
-        total_folha: total,
-        funcionrios: employees
-      })
-    } catch (error) {
-      res.status(500).json({message:'Erro ao gerar relatório'})
-    }
+    res.json({
+      total_funcionários: employees.length,
+      total_folha: total,
+      funcionrios: employees
+    })
+  } catch (error) {
+    res.status(500).json({message:'Erro ao gerar relatório'})
   }
 }
 
